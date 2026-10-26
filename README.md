@@ -33,3 +33,13 @@ Rzadkie, powtarzalne sprawy w jednym miejscu. Jednym spojrzeniem widać, co już
 ## Gdzie są zapisywane dane
 
 W Claude lista zapisuje się w prywatnej części bazy aplikacji, widocznej tylko dla jej właściciela, więc jest ta sama na komputerze i na telefonie. Na GitHub Pages nie ma takiej bazy: lista działa, ale znika po zamknięciu strony, o czym aplikacja informuje na górze.
+
+## Wynik
+
+| | |
+|---|---|
+| **Niewiadoma** | Sprawdzona. Lista zapisuje się, przetrwa zamknięcie strony i jest ta sama na komputerze i na telefonie. Zmiana zrobiona na telefonie pojawia się na komputerze bez odświeżania. |
+| **Czas** | Około 20 minut budowania z 2 godzin budżetu. |
+| **Decyzja** | Kończymy na pierwszej wersji. Po pierwszym użyciu nic nie trzeba poprawiać, a porównanie z punktem wyjścia (przeładowany kalendarz) wypada dobrze. Pozycje z „Poza projektem” zostają tam, gdzie są. |
+
+Zgodnie z rozdziałem *Decide When to Stop*: wynik porównujemy z punktem wyjścia, a nie z wersją idealną.
