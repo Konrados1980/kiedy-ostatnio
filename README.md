@@ -43,3 +43,13 @@ W Claude lista zapisuje się w prywatnej części bazy aplikacji, widocznej tylk
 | **Decyzja** | Kończymy na pierwszej wersji. Po pierwszym użyciu nic nie trzeba poprawiać, a porównanie z punktem wyjścia (przeładowany kalendarz) wypada dobrze. Pozycje z „Poza projektem” zostają tam, gdzie są. |
 
 Zgodnie z rozdziałem *Decide When to Stop*: wynik porównujemy z punktem wyjścia, a nie z wersją idealną.
+
+## Następny pomysł: codzienne podsumowanie
+
+Pomysł wrócił zaraz po zakończeniu pierwszej wersji (*Important ideas come back*): sygnał, gdy minie termin.
+
+- Dźwięk w samej aplikacji nie wystarczy, bo strona gra tylko wtedy, gdy jest otwarta, czyli gdy i tak widać czerwony wiersz.
+- Kierunek: raz dziennie jedno zbiorcze powiadomienie na telefon, tylko gdy coś jest po terminie albo termin się zbliża. Nie osobny alarm dla każdej rzeczy, żeby nie odtworzyć przeładowanego kalendarza.
+- Niewiadoma: czy zaplanowane zadanie w Claude ma dostęp do prywatnej listy.
+
+Osobny mały projekt z własnymi pięcioma polami, zaplanowany na 27.10.2026.
