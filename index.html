@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kiedy ostatnio</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Układ: jedna kolumna ~640px; każda rzecz to wiersz z „wskaźnikiem zużycia” (ile minęło z okresu). */
+:root {
+  --bg: #eef0ec; --surface: #fbfcfa; --ink: #1f2a24; --muted: #5a675f; --line: #d5dbd4; --track: #e3e8e2;
+  --accent: #2f5d50; --on-accent: #fbfcfa;
+  --ok: #3c8a5a; --soon: #b9811a; --late: #b8432f;
+  --soon-bg: #f6ecd6; --late-bg: #f6e1dc; --ok-bg: #e0eee5;
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141a17; --surface: #1c2420; --ink: #e4ebe6; --muted: #9aa8a0; --line: #2d3832; --track: #27312c;
+    --accent: #7fbfa8; --on-accent: #10201a;
+    --ok: #6cc28e; --soon: #e0b45a; --late: #ec7a64;
+    --soon-bg: #3a3220; --late-bg: #3d2420; --ok-bg: #1f3428;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #141a17; --surface: #1c2420; --ink: #e4ebe6; --muted: #9aa8a0; --line: #2d3832; --track: #27312c;
+  --accent: #7fbfa8; --on-accent: #10201a;
+  --ok: #6cc28e; --soon: #e0b45a; --late: #ec7a64;
+  --soon-bg: #3a3220; --late-bg: #3d2420; --ok-bg: #1f3428;
+  color-scheme: dark;
+}
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.5; }
+main { max-width: 640px; margin: 0 auto; padding-block: 2rem 4rem;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; gap: 1.5rem; }
+h1 { font-family: var(--display); font-size: 2.4rem; line-height: 1.05; margin: 0; letter-spacing: -.01em; text-wrap: balance; }
+h2 { font-family: var(--display); font-size: 1.15rem; margin: 0; }
+.summary { color: var(--muted); margin: .4rem 0 0; }
+.summary b { color: var(--ink); font-weight: 600; }
+.banner { padding: .7rem .9rem; border-radius: 8px; background: var(--soon-bg); font-size: .92rem; }
+.banner.err { background: var(--late-bg); }
+
+/* Lista */
+.list { display: grid; gap: .6rem; list-style: none; margin: 0; padding: 0; }
+.item { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: .9rem 1rem; display: grid; gap: .55rem; }
+.item.late { border-color: color-mix(in srgb, var(--late) 45%, var(--line)); }
+.row { display: flex; align-items: baseline; gap: .6rem; flex-wrap: wrap; }
+.name { font-weight: 600; font-size: 1.05rem; flex: 1 1 12rem; min-width: 0; overflow-wrap: anywhere; }
+.pill { font-size: .78rem; font-weight: 600; letter-spacing: .02em; padding: .1rem .5rem; border-radius: 999px; white-space: nowrap; }
+.pill.ok { background: var(--ok-bg); color: var(--ink); }
+.pill.soon { background: var(--soon-bg); color: var(--ink); }
+.pill.late { background: var(--late-bg); color: var(--ink); }
+.pill::before { content: ""; display: inline-block; width: .5rem; height: .5rem; border-radius: 50%; margin-right: .35rem; vertical-align: .05rem; }
+.pill.ok::before { background: var(--ok); } .pill.soon::before { background: var(--soon); } .pill.late::before { background: var(--late); }
+.gauge { height: 6px; background: var(--track); border-radius: 3px; overflow: hidden; }
+.gauge span { display: block; height: 100%; border-radius: 3px; }
+.gauge .ok { background: var(--ok); } .gauge .soon { background: var(--soon); } .gauge .late { background: var(--late); }
+.facts { color: var(--muted); font-size: .9rem; font-variant-numeric: tabular-nums; flex: 1 1 14rem; }
+.facts b { color: var(--ink); font-weight: 600; }
+.actions { display: flex; gap: .4rem; flex-wrap: wrap; justify-content: flex-end; }
+
+button, input, select { font: inherit; }
+.btn { border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 8px; padding: .4rem .8rem; cursor: pointer; font-size: .9rem; }
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 600; }
+.btn.quiet { border-color: transparent; color: var(--muted); }
+.btn.danger { border-color: var(--late); color: var(--ink); background: var(--late-bg); }
+.btn:disabled { opacity: .5; cursor: default; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Formularz */
+.add { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 1rem; display: grid; gap: .8rem; }
+.fields { display: grid; gap: .8rem; grid-template-columns: 1fr; }
+@media (min-width: 560px) { .fields { grid-template-columns: 1.6fr 1fr; } .fields .wide { grid-column: 1 / -1; } }
+label { display: grid; gap: .25rem; font-size: .88rem; color: var(--muted); }
+input, select { color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: .5rem .6rem; min-width: 0; width: 100%; }
+.every { display: grid; grid-template-columns: 5rem 1fr; gap: .4rem; }
+.hint { font-size: .8rem; color: var(--muted); margin: 0; }
+.form-err { color: var(--late); font-size: .88rem; margin: 0; }
+.chips { display: flex; flex-wrap: wrap; gap: .4rem; }
+.chip { border: 1px dashed var(--line); background: none; color: var(--ink); border-radius: 999px; padding: .25rem .7rem; font-size: .85rem; cursor: pointer; }
+.chip:hover { border-color: var(--accent); }
+.empty { text-align: left; color: var(--muted); padding: 1rem; border: 1px dashed var(--line); border-radius: 10px; }
+
+/* Komunikat z cofnięciem */
+.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+  background: var(--ink); color: var(--bg); border-radius: 10px; padding: .6rem .7rem .6rem 1rem; display: flex; gap: .8rem; align-items: center;
+  max-width: calc(100% - 2rem); box-shadow: 0 6px 20px rgb(0 0 0 / .18); font-size: .92rem; }
+.toast button { background: none; border: 1px solid currentColor; color: inherit; border-radius: 6px; padding: .2rem .6rem; cursor: pointer; }
+@media (prefers-reduced-motion: no-preference) { .gauge span { transition: width .4s ease; } }
+</style>
+<style>
+:root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Kiedy ostatnio</h1>
+    <p class="summary" id="summary">Wczytuję twoją listę…</p>
+  </header>
+
+  <p class="banner" id="storageBanner" hidden></p>
+
+  <section aria-labelledby="listTitle" style="display:grid;gap:.6rem">
+    <h2 id="listTitle">Twoje rzeczy</h2>
+    <ul class="list" id="list"></ul>
+    <div class="empty" id="empty" hidden>
+      Lista jest pusta. Dodaj pierwszą rzecz poniżej albo kliknij jedną z podpowiedzi.
+    </div>
+  </section>
+
+  <form class="add" id="addForm" novalidate>
+    <h2>Dodaj rzecz</h2>
+    <div class="chips" id="chips" aria-label="Podpowiedzi"></div>
+    <div class="fields">
+      <label class="wide">Co trzeba robić
+        <input id="fName" maxlength="60" placeholder="Np. Wymiana filtra w okapie" autocomplete="off">
+      </label>
+      <label>Co ile
+        <span class="every">
+          <input id="fEvery" type="number" min="1" max="999" inputmode="numeric" value="3">
+          <select id="fUnit">
+            <option value="d">dni</option>
+            <option value="w">tygodni</option>
+            <option value="m" selected>miesięcy</option>
+            <option value="y">lat</option>
+          </select>
+        </span>
+      </label>
+      <label>Kiedy ostatnio
+        <input id="fLast" type="date">
+      </label>
+      <p class="hint wide">Nie pamiętasz, kiedy ostatnio? Zostaw datę pustą, a rzecz trafi na górę listy jako do zrobienia.</p>
+    </div>
+    <p class="form-err" id="formErr" hidden></p>
+    <div><button class="btn primary" type="submit" id="addBtn">Dodaj do listy</button></div>
+  </form>
+</main>
+
+<div class="toast" id="toast" role="status" hidden><span id="toastText"></span><button type="button" id="toastUndo">Cofnij</button></div>
+
+<script>
+// ---------- daty: liczymy w dniach kalendarzowych, w lokalnej strefie ----------
+const pad = n => String(n).padStart(2, "0");
+const todayStr = () => { const d = new Date(); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; };
+const toUTC = s => { const [y, m, d] = s.split("-").map(Number); return Date.UTC(y, m - 1, d); };
+const daysSince = s => Math.round((toUTC(todayStr()) - toUTC(s)) / 86400000);
+const isDate = s => typeof s === "string" && /^\d{4}-\d{2}-\d{2}$/.test(s);
+const fmtDate = s => new Date(toUTC(s)).toLocaleDateString("pl-PL", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+
+const UNIT_DAYS = { d: 1, w: 7, m: 30, y: 365 };
+function plural(n, one, few, many) {
+  const a = Math.abs(n), t = a % 10, h = a % 100;
+  if (a === 1) return one;
+  return t >= 2 && t <= 4 && (h < 12 || h > 14) ? few : many;
+}
+const unitText = (n, u) => ({
+  d: plural(n, "dzień", "dni", "dni"), w: plural(n, "tydzień", "tygodnie", "tygodni"),
+  m: plural(n, "miesiąc", "miesiące", "miesięcy"), y: plural(n, "rok", "lata", "lat"),
+})[u];
+const everyText = (n, u) => n === 1 ? `co ${u === "w" ? "tydzień" : unitText(1, u)}` : `co ${n} ${unitText(n, u)}`;
+const daysText = n => `${n} ${plural(n, "dzień", "dni", "dni")}`;
+
+// Stan rzeczy: ile minęło z okresu. Od 80% „wkrótce”, od 100% „zaległe”.
+function status(item) {
+  const period = item.coIle * UNIT_DAYS[item.jednostka];
+  if (!isDate(item.ostatnio)) return { key: "late", ratio: Infinity, period, label: "Do zrobienia", line: "Nie wiadomo, kiedy ostatnio" };
+  const since = Math.max(0, daysSince(item.ostatnio));
+  const left = period - since, ratio = since / period;
+  const key = ratio >= 1 ? "late" : ratio >= .8 ? "soon" : "ok";
+  const label = key === "late" ? (left === 0 ? "Dziś" : `${daysText(-left)} po terminie`) : key === "soon" ? `Za ${daysText(left)}` : "W porządku";
+  const ago = since === 0 ? "dziś" : since === 1 ? "wczoraj" : `${daysText(since)} temu`;
+  return { key, ratio, period, since, label, line: `Ostatnio <b>${ago}</b> (${fmtDate(item.ostatnio)}), ${everyText(item.coIle, item.jednostka)}` };
+}
+
+// ---------- zapis: baza Claude, prywatna lista każdej osoby ----------
+let ITEMS = [], col = null, ready = false, confirmId = null;
+const memory = { items: [] };   // gdy zapis jest niedostępny: lista żyje tylko do odświeżenia
+
+function banner(text, err) {
+  const b = document.getElementById("storageBanner");
+  b.textContent = text || ""; b.hidden = !text; b.className = "banner" + (err ? " err" : "");
+}
+const use = n => window.claude?.use ? window.claude.use(n).catch(() => null) : Promise.resolve(null);
+
+Promise.all([use("db"), use("user")]).then(async ([db, user]) => {
+  const uid = user ? await user.id() : null;
+  if (!db || !uid) {
+    banner("Zapis jest tu niedostępny. Lista działa, ale zniknie po zamknięciu strony. Otwórz aplikację w Claude, żeby zapisywać.");
+    ready = true; render(); return;
+  }
+  col = db.collection(`data/users/${uid}`);
+  col.onSnapshot(snap => {
+    ITEMS = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+      .filter(x => typeof x.nazwa === "string" && UNIT_DAYS[x.jednostka] && Number(x.coIle) > 0)
+      .map(x => ({ ...x, coIle: Number(x.coIle) }));
+    ready = true; render();
+  }, () => { banner("Połączenie z zapisem zostało przerwane. Odśwież stronę.", true); });
+});
+
+async function addItem(item) {
+  if (!col) { memory.items.push({ id: "m" + Date.now(), ...item }); ITEMS = memory.items; render(); return true; }
+  await col.add(item); return true;
+}
+async function setLast(id, value) {
+  if (!col) { const x = memory.items.find(i => i.id === id); if (x) x.ostatnio = value; ITEMS = memory.items; render(); return; }
+  await col.doc(id).update({ ostatnio: value });
+}
+async function removeItem(id) {
+  if (!col) { memory.items = memory.items.filter(i => i.id !== id); ITEMS = memory.items; render(); return; }
+  await col.doc(id).delete();
+}
+
+// ---------- widok ----------
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+function render() {
+  const rows = ITEMS.map(i => ({ i, s: status(i) })).sort((a, b) => b.s.ratio - a.s.ratio || a.i.nazwa.localeCompare(b.i.nazwa, "pl"));
+  const late = rows.filter(r => r.s.key === "late").length, soon = rows.filter(r => r.s.key === "soon").length;
+  document.getElementById("summary").innerHTML = !ready ? "Wczytuję twoją listę…"
+    : !rows.length ? "Rzadkie, powtarzalne sprawy w jednym miejscu. Jednym spojrzeniem widać, co już dojrzało do zrobienia."
+    : late + soon === 0 ? `Wszystko w porządku. Rzeczy na liście: <b>${rows.length}</b>.`
+    : [late && `<b>${late}</b> ${plural(late, "zaległa", "zaległe", "zaległych")}`, soon && `<b>${soon}</b> wkrótce`].filter(Boolean).join(", ") + `, na liście: ${rows.length}.`;
+  document.getElementById("empty").hidden = !ready || rows.length > 0;
+  document.getElementById("list").innerHTML = rows.map(({ i, s }) => `
+    <li class="item ${s.key}" data-id="${esc(i.id)}">
+      <div class="row">
+        <span class="name">${esc(i.nazwa)}</span>
+        <span class="pill ${s.key}">${esc(s.label)}</span>
+      </div>
+      <div class="gauge" role="img" aria-label="${isFinite(s.ratio) ? `Minęło ${s.since} z ${s.period} dni` : "Brak daty"}">
+        <span class="${s.key}" style="width:${isFinite(s.ratio) ? Math.min(100, Math.round(s.ratio * 100)) : 100}%"></span>
+      </div>
+      <div class="row">
+        <span class="facts">${s.line}</span>
+        <span class="actions">${confirmId === i.id
+          ? `<button class="btn danger" data-act="del-yes">Tak, usuń</button><button class="btn" data-act="del-no">Anuluj</button>`
+          : `<button class="btn quiet" data-act="del">Usuń</button><button class="btn primary" data-act="done" ${i.ostatnio === todayStr() ? "disabled" : ""}>Zrobione dziś</button>`}</span>
+      </div>
+    </li>`).join("");
+}
+
+// Cofnięcie ostatniego „Zrobione dziś”
+let undo = null, toastTimer = null;
+function toast(text, undoFn) {
+  undo = undoFn;
+  document.getElementById("toastText").textContent = text;
+  document.getElementById("toastUndo").hidden = !undoFn;
+  document.getElementById("toast").hidden = false;
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => { document.getElementById("toast").hidden = true; undo = null; }, 6000);
+}
+document.getElementById("toastUndo").addEventListener("click", async () => {
+  const fn = undo; undo = null; document.getElementById("toast").hidden = true;
+  if (fn) try { await fn(); } catch { toast("Nie udało się cofnąć. Spróbuj jeszcze raz."); }
+});
+
+document.getElementById("list").addEventListener("click", async e => {
+  const btn = e.target.closest("button[data-act]"); if (!btn) return;
+  const id = btn.closest(".item").dataset.id, item = ITEMS.find(x => x.id === id); if (!item) return;
+  const act = btn.dataset.act;
+  if (act === "del") { confirmId = id; render(); return; }
+  if (act === "del-no") { confirmId = null; render(); return; }
+  btn.disabled = true;
+  try {
+    if (act === "del-yes") { confirmId = null; await removeItem(id); toast(`Usunięto: ${item.nazwa}`); }
+    if (act === "done") {
+      const prev = item.ostatnio ?? null;
+      await setLast(id, todayStr());
+      toast(`Zapisano: ${item.nazwa}, zrobione dziś`, () => setLast(id, prev));
+    }
+  } catch { btn.disabled = false; toast("Nie udało się zapisać zmiany. Sprawdź połączenie i spróbuj ponownie."); }
+});
+
+// Formularz
+const SUGGEST = [
+  ["Wymiana filtra w okapie", 3, "m"], ["Wymiana oleju w aucie", 1, "y"], ["Podlewanie kwiatów", 1, "w"],
+  ["Wizyta u dentysty", 6, "m"], ["Odkamienianie czajnika", 1, "m"], ["Wymiana szczoteczki do zębów", 3, "m"],
+];
+document.getElementById("chips").innerHTML = SUGGEST.map(([n, e, u], k) => `<button type="button" class="chip" data-k="${k}">${esc(n)}, ${esc(everyText(e, u))}</button>`).join("");
+document.getElementById("chips").addEventListener("click", e => {
+  const c = e.target.closest(".chip"); if (!c) return;
+  const [n, ev, u] = SUGGEST[c.dataset.k];
+  fName.value = n; fEvery.value = ev; fUnit.value = u; fLast.focus();
+});
+const fName = document.getElementById("fName"), fEvery = document.getElementById("fEvery"), fUnit = document.getElementById("fUnit"), fLast = document.getElementById("fLast");
+fLast.max = todayStr();
+
+document.getElementById("addForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const err = document.getElementById("formErr"), btn = document.getElementById("addBtn");
+  const nazwa = fName.value.trim(), coIle = Math.round(Number(fEvery.value)), last = fLast.value;
+  const problem = !nazwa ? "Wpisz, co trzeba robić." : !(coIle >= 1 && coIle <= 999) ? "Podaj, co ile, liczbą od 1 do 999."
+    : last && !isDate(last) ? "Podaj datę w formacie dzień, miesiąc, rok." : last && last > todayStr() ? "Data ostatniego razu nie może być z przyszłości." : "";
+  err.textContent = problem; err.hidden = !problem;
+  if (problem) return;
+  btn.disabled = true;
+  try {
+    await addItem({ nazwa, coIle, jednostka: fUnit.value, ostatnio: last || null, utworzono: new Date().toISOString() });
+    fName.value = ""; fLast.value = ""; fName.focus();
+    toast(`Dodano: ${nazwa}`);
+  } catch (ex) {
+    err.textContent = ex?.code === "quota_exceeded" ? "Lista jest pełna. Usuń coś, zanim dodasz nową rzecz." : "Nie udało się zapisać. Sprawdź połączenie i spróbuj ponownie.";
+    err.hidden = false;
+  } finally { btn.disabled = false; }
+});
+
+// Po północy liczniki muszą się przesunąć, nawet jeśli strona jest otwarta.
+let lastDay = todayStr();
+setInterval(() => { if (todayStr() !== lastDay) { lastDay = todayStr(); fLast.max = lastDay; render(); } }, 60000);
+render();
+</script>
+</body>
+</html>
