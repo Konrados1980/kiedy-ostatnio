@@ -38,7 +38,7 @@ W Claude lista zapisuje się w prywatnej części bazy aplikacji, widocznej tylk
 
 | | |
 |---|---|
-| **Niewiadoma** | Sprawdzona. Lista zapisuje się, przetrwa zamknięcie strony i jest ta sama na komputerze i na telefonie. Zmiana zrobiona na telefonie pojawia się na komputerze bez odświeżania. |
+| **Niewiadoma** | Sprawdzona. Lista zapisuje się, przetrwa zamknięcie strony i jest ta sama na komputerze i na telefonie, gdzie działa równie dobrze. |
 | **Czas** | Około 20 minut budowania z 2 godzin budżetu. |
 | **Decyzja** | Kończymy na pierwszej wersji. Po pierwszym użyciu nic nie trzeba poprawiać, a porównanie z punktem wyjścia (przeładowany kalendarz) wypada dobrze. Pozycje z „Poza projektem” zostają tam, gdzie są. |
 
