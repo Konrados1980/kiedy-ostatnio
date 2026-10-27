@@ -44,12 +44,28 @@ W Claude lista zapisuje się w prywatnej części bazy aplikacji, widocznej tylk
 
 Zgodnie z rozdziałem *Decide When to Stop*: wynik porównujemy z punktem wyjścia, a nie z wersją idealną.
 
-## Następny pomysł: codzienne podsumowanie
+## Projekt 2: poranne podsumowanie
 
-Pomysł wrócił zaraz po zakończeniu pierwszej wersji (*Important ideas come back*): sygnał, gdy minie termin.
+Pomysł wrócił zaraz po zakończeniu pierwszej wersji (*Important ideas come back*), więc dostał własny opis i własny budżet, zamiast trafić do zamkniętego projektu.
 
-- Dźwięk w samej aplikacji nie wystarczy, bo strona gra tylko wtedy, gdy jest otwarta, czyli gdy i tak widać czerwony wiersz.
-- Kierunek: raz dziennie jedno zbiorcze powiadomienie na telefon, tylko gdy coś jest po terminie albo termin się zbliża. Nie osobny alarm dla każdej rzeczy, żeby nie odtworzyć przeładowanego kalendarza.
-- Niewiadoma: czy zaplanowane zadanie w Claude ma dostęp do prywatnej listy.
+| Pole | Opis |
+|---|---|
+| **Problem** | Gdy nie otworzę aplikacji, nie wiem, że coś minęło, a nie chcę osobnego alarmu dla każdej rzeczy jak w kalendarzu. |
+| **Czas** | 1 godzina. |
+| **Pierwsza wersja** | Codzienne sprawdzenie listy o 8:00, jedno zbiorcze powiadomienie na telefon tylko wtedy, gdy coś jest po terminie albo zostały do niego najwyżej 3 dni, i cisza, gdy wszystko jest w porządku. |
+| **Do sprawdzenia** | Czy zaplanowane zadanie w Claude ma dostęp do mojej prywatnej listy. |
+| **Poza projektem** | Wybór godziny w aplikacji, osobne alarmy dla każdej rzeczy, przypomnienia e-mailem. |
 
-Osobny mały projekt z własnymi pięcioma polami, zaplanowany na 27.10.2026.
+### Jak to działa
+
+Zaplanowane zadanie w Claude uruchamia się codziennie o 7:57 (żeby powiadomienie zdążyło przed 8:00). Czyta prywatną listę, liczy dla każdej rzeczy, ile zostało do terminu, i wysyła jedno powiadomienie, np. „Kiedy ostatnio: 2 rzeczy. Wizyta u dentysty (247 dni po terminie), …”. Jeśli nic nie wymaga uwagi, nie wysyła niczego. Zadanie tylko czyta listę i nigdy jej nie zmienia.
+
+**Dlaczego 3 dni, a nie 80% okresu jak w aplikacji:** przy rzeczach robionych raz w roku 80% to około dwóch miesięcy przed terminem, czyli o wiele za wcześnie na powiadomienie.
+
+### Wynik
+
+| | |
+|---|---|
+| **Niewiadoma** | Sprawdzona na początku próbnym zadaniem, które przeczytało listę i zostawiło na niej znak (potem usunięty). |
+| **Próba końcowa** | Powiadomienie przyszło na telefon z dwiema rzeczami po terminie, zgodnie z ręcznym wyliczeniem. Dźwięk wymagał przestawienia powiadomień Claude w Androidzie z „cichych” na domyślne. |
+| **Czas** | Około 20 minut z 1 godziny. |
