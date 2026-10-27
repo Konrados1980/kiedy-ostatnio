@@ -29,6 +29,7 @@ Rzadkie, powtarzalne sprawy w jednym miejscu. Jednym spojrzeniem widać, co już
 - **„Zrobione dziś”** zeruje licznik, z możliwością cofnięcia przez 6 sekund.
 - **Dodawanie z podpowiedziami.** Pusta data oznacza „nie pamiętam” i rzecz trafia na górę jako do zrobienia.
 - **Usuwanie z potwierdzeniem.**
+- **Zwijana sekcja „W porządku (N)”** (dodana po pierwszym dniu używania): na górze zostaje tylko to, co wymaga uwagi, a reszta czeka zwinięta. Każde urządzenie pamięta, czy sekcja ma być rozwinięta.
 
 ## Gdzie są zapisywane dane
 
